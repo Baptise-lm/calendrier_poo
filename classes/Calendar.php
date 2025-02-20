@@ -4,21 +4,24 @@
 class Calendar
 {
   private $events;
+  private $start_date;
 
-  public function __construct($events)
+  public function __construct($events, $start_date)
   {
     $this->events = $events;
+    $this->start_date = $start_date;
   }
 
   public function display()
   {
     $days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
     echo '<div class="calendar">';
-    foreach ($days as $day) {
+    foreach ($days as $index => $day) {
+      $current_date = date('Y-m-d', strtotime($this->start_date . " +$index days"));
       echo '<div class="day">';
-      echo '<h2>' . $day . '</h2>';
+      echo '<h2>' . $day . ' (' . date('d/m', strtotime($current_date)) . ')</h2>';
       foreach ($this->events as $event) {
-        if ($event['day'] == $day) {
+        if ($event['date'] == $current_date) {
           echo '<div class="event">';
           echo '<h3>' . $event['title'] . '</h3>';
           echo '<p>' . $event['description'] . '</p>';

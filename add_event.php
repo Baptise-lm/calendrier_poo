@@ -15,6 +15,7 @@ if ($_POST) {
   $event->start_time = $_POST['start_time'];
   $event->end_time = $_POST['end_time'];
   $event->day = $_POST['day'];
+  $event->date = $_POST['date'];
 
   if ($event->create()) {
     header("Location: index.php");
@@ -55,6 +56,8 @@ if ($_POST) {
       <option value="Samedi">Samedi</option>
       <option value="Dimanche">Dimanche</option>
     </select>
+    <label for="date">Date:</label>
+    <input type="date" name="date" required>
     <button type="submit">Ajouter</button>
   </form>
   <?php include 'includes/footer.php'; ?>

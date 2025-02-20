@@ -17,6 +17,7 @@ if ($_POST) {
   $event->start_time = $_POST['start_time'];
   $event->end_time = $_POST['end_time'];
   $event->day = $_POST['day'];
+  $event->date = $_POST['date'];
 
   if ($event->update()) {
     header("Location: index.php");
@@ -32,6 +33,7 @@ if ($_POST) {
   $event->start_time = $row['start_time'];
   $event->end_time = $row['end_time'];
   $event->day = $row['day'];
+  $event->date = $row['date'];
 }
 ?>
 
@@ -66,6 +68,8 @@ if ($_POST) {
       <option value="Samedi" <?php echo ($event->day == 'Samedi') ? 'selected' : ''; ?>>Samedi</option>
       <option value="Dimanche" <?php echo ($event->day == 'Dimanche') ? 'selected' : ''; ?>>Dimanche</option>
     </select>
+    <label for="date">Date:</label>
+    <input type="date" name="date" value="<?php echo $event->date; ?>" required>
     <button type="submit">Modifier</button>
   </form>
   <?php include 'includes/footer.php'; ?>

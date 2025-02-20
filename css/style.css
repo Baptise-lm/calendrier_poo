@@ -43,3 +43,24 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.week-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.week-navigation a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.week-navigation a:hover {
+  text-decoration: underline;
+}
+
+.week-navigation span {
+  font-size: 1.2em;
+}
