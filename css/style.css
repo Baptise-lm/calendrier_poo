@@ -1,0 +1,45 @@
+/* css/style.css */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.calendar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.day {
+  width: 14%;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px;
+  box-sizing: border-box;
+}
+
+.event {
+  background-color: #f9f9f9;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.event h3 {
+  margin: 0;
+}
+
+.event p {
+  margin: 5px 0;
+}
+
+a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
+}
