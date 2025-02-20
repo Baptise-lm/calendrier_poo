@@ -10,13 +10,13 @@ $db = $database->getConnection();
 
 $event = new Event($db);
 
-// Récupérer la semaine courante
-$current_week = isset($_GET['week']) ? $_GET['week'] : date('Y-m-d');
-$start_date = date('Y-m-d', strtotime('monday this week', strtotime($current_week)));
-$end_date = date('Y-m-d', strtotime('sunday this week', strtotime($current_week)));
+// Récupérer le mois courant
+$current_month = isset($_GET['month']) ? $_GET['month'] : date('Y-m');
+$start_date = date('Y-m-01', strtotime($current_month)); // Premier jour du mois
+$end_date = date('Y-m-t', strtotime($current_month)); // Dernier jour du mois
 
-// Récupérer les événements de la semaine
-$stmt = $event->readByWeek($start_date, $end_date);
+// Récupérer les événements du mois
+$stmt = $event->readByMonth($start_date, $end_date);
 $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $calendar = new Calendar($events, $start_date);
@@ -24,27 +24,66 @@ $calendar = new Calendar($events, $start_date);
 
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-  <meta charset="UTF-8">
-  <title>Planning Hebdomadaire</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <title>Planning Mensuel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
 <body>
-  <?php include 'includes/header.php'; ?>
-  <h1>Planning Hebdomadaire</h1>
+    <?php include 'includes/header.php'; ?>
+    <h1>Planning Mensuel</h1>
 
-  <!-- Navigation entre les semaines -->
-  <div class="week-navigation">
-    <a href="index.php?week=<?php echo date('Y-m-d', strtotime('-1 week', strtotime($current_week))); ?>">Semaine précédente</a>
-    <span>Semaine du <?php echo date('d/m/Y', strtotime($start_date)); ?> au <?php echo date('d/m/Y', strtotime($end_date)); ?></span>
-    <a href="index.php?week=<?php echo date('Y-m-d', strtotime('+1 week', strtotime($current_week))); ?>">Semaine suivante</a>
-  </div>
+    <!-- Navigation entre les mois -->
+    <div class="month-navigation">
+        <a href="index.php?month=<?php echo date('Y-m', strtotime('-1 month', strtotime($current_month))); ?>">Mois précédent</a>
+        <span><?php echo date('F Y', strtotime($current_month)); ?></span>
+        <a href="index.php?month=<?php echo date('Y-m', strtotime('+1 month', strtotime($current_month))); ?>">Mois suivant</a>
+    </div>
 
-  <a href="add_event.php">Ajouter un événement</a>
-  <?php $calendar->display(); ?>
-  <?php include 'includes/footer.php'; ?>
+    <a href="add_event.php">Ajouter un événement</a>
+    <?php $calendar->display(); ?>
+    <?php include 'includes/footer.php'; ?>
+
+    <script>
+        // Fonction pour gérer le drag and drop
+        $(document).ready(function() {
+            // Rendre les événements draggables
+            $('.event').attr('draggable', true);
+
+            // Événement de début de drag
+            $('.event').on('dragstart', function(e) {
+                e.originalEvent.dataTransfer.setData('text/plain', $(this).data('event-id'));
+            });
+
+            // Événement de drop
+            $('.day').on('dragover', function(e) {
+                e.preventDefault(); // Permettre le drop
+            });
+
+            $('.day').on('drop', function(e) {
+                e.preventDefault();
+                const eventId = e.originalEvent.dataTransfer.getData('text/plain');
+                const newDate = $(this).data('date'); // Récupérer la nouvelle date
+
+                // Envoyer une requête AJAX pour mettre à jour la date de l'événement
+                $.ajax({
+                    url: 'update_event_date.php',
+                    method: 'POST',
+                    data: {
+                        event_id: eventId,
+                        new_date: newDate
+                    },
+                    success: function(response) {
+                        if (response === 'success') {
+                            location.reload(); // Recharger la page pour afficher les changements
+                        } else {
+                            alert('Erreur lors de la mise à jour de l\'événement.');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
-
 </html>

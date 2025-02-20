@@ -108,4 +108,32 @@ class Event
     $stmt->execute();
     return $stmt;
   }
+
+  public function readByMonth($start_date, $end_date)
+  {
+    $query = "SELECT * FROM " . $this->table . " WHERE date BETWEEN :start_date AND :end_date ORDER BY date, start_time";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':start_date', $start_date);
+    $stmt->bindParam(':end_date', $end_date);
+    $stmt->execute();
+
+    return $stmt;
+  }
+
+  public function updateDate()
+  {
+    $query = "UPDATE " . $this->table . " SET date=:date WHERE id=:id";
+    $stmt = $this->conn->prepare($query);
+
+    $this->date = htmlspecialchars(strip_tags($this->date));
+    $this->id = htmlspecialchars(strip_tags($this->id));
+
+    $stmt->bindParam(':date', $this->date);
+    $stmt->bindParam(':id', $this->id);
+
+    if ($stmt->execute()) {
+      return true;
+    }
+    return false;
+  }
 }
