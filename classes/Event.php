@@ -1,6 +1,4 @@
 <?php
-// classes/Event.php
-
 class Event
 {
   private $conn;
@@ -135,5 +133,13 @@ class Event
       return true;
     }
     return false;
+  }
+
+  public function getPredefinedEvents()
+  {
+    $query = "SELECT id, event, description FROM predefined_events ORDER BY event";
+    $stmt = $this->conn->prepare($query);
+    $stmt->execute();
+    return $stmt;
   }
 }
